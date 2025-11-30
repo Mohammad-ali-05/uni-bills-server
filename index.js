@@ -30,11 +30,18 @@ async function run() {
 
     const db = client.db("uni_bills");
     const monthlyBillsCollection = db.collection("monthly_bills");
-    const allPaidBillsCollection = db.collection("paid_bills")
+    const allPaidBillsCollection = db.collection("paid_bills");
 
     /* Getting all data for bills page */
     app.get("/bills", async (req, res) => {
-      const result = await monthlyBillsCollection.find().toArray();
+      const category = req.query.category;
+      let filter = {};
+
+      if (category) {
+        filter.category = category;
+      }
+
+      const result = await monthlyBillsCollection.find(filter).toArray();
       res.send(result);
     });
 
@@ -55,7 +62,7 @@ async function run() {
       const data = req.body;
       console.log(data);
 
-      const result = await allPaidBillsCollection.insertOne(data)
+      const result = await allPaidBillsCollection.insertOne(data);
       res.send(result);
     });
 
