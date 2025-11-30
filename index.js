@@ -30,6 +30,7 @@ async function run() {
 
     const db = client.db("uni_bills");
     const monthlyBillsCollection = db.collection("monthly_bills");
+    const allPaidBillsCollection = db.collection("paid_bills")
 
     /* Getting all data for bills page */
     app.get("/bills", async (req, res) => {
@@ -48,11 +49,14 @@ async function run() {
 
       res.send(result);
     });
-    
+
+    /* Adding paid bills data to database */
     app.post("/pay-bills", async (req, res) => {
       const data = req.body;
       console.log(data);
-      res.send("success");
+
+      const result = await allPaidBillsCollection.insertOne(data)
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
