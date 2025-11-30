@@ -48,6 +48,12 @@ async function run() {
 
       res.send(result);
     });
+    
+    app.post("/pay-bills", async (req, res) => {
+      const data = req.body;
+      console.log(data);
+      res.send("success");
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
