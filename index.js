@@ -42,6 +42,7 @@ async function run() {
       }
 
       const result = await monthlyBillsCollection.find(filter).toArray();
+
       res.send(result);
     });
 
@@ -49,10 +50,7 @@ async function run() {
     app.get("/bill-details/:id", async (req, res) => {
       const { id } = req.params;
       const objectId = new ObjectId(id);
-
       const result = await monthlyBillsCollection.findOne({ _id: objectId });
-
-      console.log(result);
 
       res.send(result);
     });
@@ -60,11 +58,18 @@ async function run() {
     /* Adding paid bills data to database */
     app.post("/pay-bills", async (req, res) => {
       const data = req.body;
-      console.log(data);
-
       const result = await allPaidBillsCollection.insertOne(data);
+
       res.send(result);
     });
+
+    /* Getting paid bills data for user */
+    app.get("/my-pay-bills", async (req, res) => {
+      const email = req.query.email
+      const result = await allPaidBillsCollection.find({ email: email }).toArray()
+      
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
