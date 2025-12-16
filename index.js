@@ -65,28 +65,42 @@ async function run() {
 
     /* Getting paid bills data for user */
     app.get("/my-pay-bills", async (req, res) => {
-      const email = req.query.email
-      const result = await allPaidBillsCollection.find({ email: email }).toArray()
-      
-      res.send(result)
-    })
+      const email = req.query.email;
+      const result = await allPaidBillsCollection
+        .find({ email: email })
+        .toArray();
+
+      res.send(result);
+    });
 
     /* Updating paid bills data */
     app.put("/update-bill/:id", async (req, res) => {
       const { id } = req.params;
-      const data = req.body
+      const data = req.body;
       const objectId = new ObjectId(id);
-      const filter = { _id: objectId }
+      const filter = { _id: objectId };
       const update = {
-        $set: data
-      }
+        $set: data,
+      };
 
-      const result = await allPaidBillsCollection.updateOne(filter, update)
+      const result = await allPaidBillsCollection.updateOne(filter, update);
+      res.send({
+        success: true,
+        result,
+      });
+    });
+
+    /* Deleting user paid bills */
+    app.delete("/delete-bill/:id", async (req, res) => {
+      const { id } = req.params;
+      const objectId = new ObjectId(id);
+      const result = await allPaidBillsCollection.deleteOne({ _id: objectId });
+
       res.send({
         success: true,
         result
       })
-    })
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
