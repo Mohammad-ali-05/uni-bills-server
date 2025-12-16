@@ -71,6 +71,23 @@ async function run() {
       res.send(result)
     })
 
+    /* Updating paid bills data */
+    app.put("/update-bill/:id", async (req, res) => {
+      const { id } = req.params;
+      const data = req.body
+      const objectId = new ObjectId(id);
+      const filter = { _id: objectId }
+      const update = {
+        $set: data
+      }
+
+      const result = await allPaidBillsCollection.updateOne(filter, update)
+      res.send({
+        success: true,
+        result
+      })
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
