@@ -32,6 +32,39 @@ async function run() {
     const monthlyBillsCollection = db.collection("monthly_bills");
     const allPaidBillsCollection = db.collection("paid_bills");
 
+    /* Getting 6 current month data for home page */
+
+    app.get("/home", async (req, res) => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+
+      const startOfMonth = new Date(currentYear, currentMonth, 1);
+      const endOfMonth = new Date(
+        currentYear,
+        currentMonth + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+
+      console.log(startOfMonth, endOfMonth)
+
+      const result = await monthlyBillsCollection
+        .find({
+          date: { $gte: startOfMonth, $lte: endOfMonth },
+        })
+        .sort({ date: -1 })
+        .limit(6)
+        .toArray();
+      
+      console.log(result)
+
+      res.send(result);
+    });
+
     /* Getting all data for bills page */
     app.get("/bills", async (req, res) => {
       const category = req.query.category;
@@ -98,8 +131,8 @@ async function run() {
 
       res.send({
         success: true,
-        result
-      })
+        result,
+      });
     });
 
     // Send a ping to confirm a successful connection
