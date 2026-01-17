@@ -5,17 +5,8 @@ require("dotenv").config();
 const app = express();
 const port = 3000;
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
-app.options("*", cors());
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.onnu8qm.mongodb.net/?appName=Cluster0`;
 
@@ -68,7 +59,7 @@ async function run() {
         .sort({ date: -1 })
         .limit(6)
         .toArray();
-
+      
       // console.log(result)
 
       res.send(result);
