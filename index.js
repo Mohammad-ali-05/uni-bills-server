@@ -5,8 +5,17 @@ require("dotenv").config();
 const app = express();
 const port = 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.options("*", cors());
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.onnu8qm.mongodb.net/?appName=Cluster0`;
 
@@ -26,7 +35,7 @@ app.get("/", (req, res) => {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const db = client.db("uni_bills");
     const monthlyBillsCollection = db.collection("monthly_bills");
@@ -50,7 +59,7 @@ async function run() {
         999
       );
 
-      console.log(startOfMonth, endOfMonth)
+      // console.log(startOfMonth, endOfMonth)
 
       const result = await monthlyBillsCollection
         .find({
@@ -59,8 +68,8 @@ async function run() {
         .sort({ date: -1 })
         .limit(6)
         .toArray();
-      
-      console.log(result)
+
+      // console.log(result)
 
       res.send(result);
     });
@@ -136,10 +145,10 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    /* await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    ); */
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
